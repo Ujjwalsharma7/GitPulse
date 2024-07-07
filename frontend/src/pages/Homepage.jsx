@@ -13,36 +13,54 @@ const HomePage = () => {
 
   const [sortType, setSortType] = useState("forks");
 
-  const getUserProfileAndRepos = useCallback(async () => {
-    setLoading(true);
-    try {
-      const userRes = await fetch("https://api.github.com/users/Ujjwalsharma7");
-      const userProfile = await userRes.json();
-      setUserProfile(userProfile);
+  const getUserProfileAndRepos = useCallback(
+    async (username = "ujjwalsharma7") => {
+      setLoading(true);
+      try {
+        const userRes = await fetch(`https://api.github.com/users/${username}`);
+        const userProfile = await userRes.json();
+        setUserProfile(userProfile);
 
-      const repoRes = await fetch(userProfile.repos_url);
-      const Repos = await repoRes.json();
-      setRepos(Repos);
-      console.log("user profile: ", userProfile);
-      console.log("repos: ", Repos);
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        const repoRes = await fetch(userProfile.repos_url);
+        const Repos = await repoRes.json();
+        setRepos(Repos);
+        console.log("user profile: ", userProfile);
+        console.log("repos: ", Repos);
+
+        return { userProfile, Repos };
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     getUserProfileAndRepos();
   }, [getUserProfileAndRepos]);
+
+  const onSearch = async (e, username) => {
+    e.preventDefault();
+    setLoading(true);
+    setRepos([]);
+    setUserProfile(null);
+
+    const { userProfile, Repos } = await getUserProfileAndRepos(username);
+
+    setUserProfile(userProfile);
+    setRepos(Repos);
+    setLoading(false);
+  };
   return (
     <div className="m-4">
-      <Search />
+      <Search onSearch={onSearch} />
       <SortRepos />
       <div className="flex gap-4 flex-col lg:flex-row justify-center items-start">
         {userProfile && !loading && <ProfileInfo userProfile={userProfile} />}
 
-        {repos.length > 0 && !loading && <Repos repos={repos} />}
+        {!loading && <Repos repos={repos} />}
         {loading && <Spinner />}
       </div>
     </div>
