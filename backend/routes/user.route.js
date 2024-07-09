@@ -1,8 +1,8 @@
 import express from "express";
-import { getProfileAndRepos } from "../controllers/user.controller.js";
+import { getUserProfileAndRepos } from "../controllers/user.controller.js";
 
 const router = express.Router();
 
-router.get("/profile/:username", getProfileAndRepos);
+router.get("/profile/:username", getUserProfileAndRepos);
 
 export default router;

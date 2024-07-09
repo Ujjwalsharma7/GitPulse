@@ -1,7 +1,8 @@
-import Repo from "./Repo.jsx";
+import Repo from "./Repo";
 
 const Repos = ({ repos, alwaysFullWidth = false }) => {
   const className = alwaysFullWidth ? "w-full" : "lg:w-2/3 w-full";
+
   return (
     <div className={`${className} bg-glass rounded-lg px-8 py-6`}>
       <ol className="relative border-s border-gray-200">
@@ -9,11 +10,12 @@ const Repos = ({ repos, alwaysFullWidth = false }) => {
           <Repo key={repo.id} repo={repo} />
         ))}
         {repos.length === 0 && (
-          <p className="text-gray-500 text-lg">No repositories found</p>
+          <p className="flex items-center justify-center h-32 ">
+            No repos found
+          </p>
         )}
       </ol>
     </div>
   );
 };
-
 export default Repos;
